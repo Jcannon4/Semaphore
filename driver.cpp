@@ -1,14 +1,15 @@
 //push test
 #include <stdio.h> 
+#include <unistd.h>
 #include <stdlib.h> 
 #include <string.h>
 #include <iostream>
-#include <unistd.h>
-#include <vector>
-#include <math.h>    
 #include <pthread.h>  
 
 #include "io.h"
+#include "belt.h"
+#include "consumer.h"
+#include "producer.h"
 
 ProductType drive_local;
 ConsumerType drive_consumer;
@@ -17,7 +18,8 @@ int main(int argc, char **argv) {
    
     int option;
     int ethel_pace, lucy_pace, cfb_rate, esc_rate = 0;
-    int i = 0;
+    Belt *conveyor = new Belt(100);
+    pthread_t main_thread[4];
   
   while ((option = getopt(argc, argv, "E:L:f:e:")) != -1){
       switch (option){
@@ -42,15 +44,15 @@ int main(int argc, char **argv) {
             exit(10);
       }
 
-    pthread_t consumer_lucy, consumer_ethel, producer_cfb, producer_esc;
-
-    
-    //CREATE CONSUMER THREADS
-    //CREATE PRODUCER THREADS
-
-    //JOIN THREADS
-
-
   }
+  Producer *snail_producer = new Producer(conveyor, esc_rate, "snail");
+    Producer *FROG = new Producer(conveyor, esc_rate, "frog");
+    //Thread CFB
+    //then ESC
+    //CREATE LUCY 
+    //THEN ETHEL
+    pthread_create(&main_thread[0], NULL, &produce, (void * )snail_producer);
+    pthread_join(main_thread[0], NULL);
+    printf("EXECUTE AFTER THREAD");
 return 0;
 }

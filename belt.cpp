@@ -1,11 +1,10 @@
-//Circular Array with limit of 10
 #include "belt.h"
 
 using namespace std;
 
-Belt::Belt() {
+Belt::Belt(int limit) {
     ribbits = 0;
     snails = 0;
-    max = 100;
+    max = limit;
     
 }
