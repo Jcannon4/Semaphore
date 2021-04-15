@@ -45,14 +45,27 @@ int main(int argc, char **argv) {
       }
 
   }
+  Producer *frog_producer = new Producer(conveyor, cfb_rate, "frog");
   Producer *snail_producer = new Producer(conveyor, esc_rate, "snail");
-    Producer *FROG = new Producer(conveyor, esc_rate, "frog");
+  Consumer *lucy = new Consumer(conveyor, lucy_pace, "Lucy");
+  Consumer *ethel = new Consumer(conveyor, ethel_pace, "Ethel");
+    
     //Thread CFB
     //then ESC
     //CREATE LUCY 
     //THEN ETHEL
-    pthread_create(&main_thread[0], NULL, &produce, (void * )snail_producer);
+    pthread_create(&main_thread[0], NULL, produce, (void * )snail_producer);
+    pthread_create(&main_thread[1], NULL, produce, (void * )frog_producer);
+    pthread_create(&main_thread[2], NULL, consume, (void * )lucy);
+    pthread_create(&main_thread[3], NULL, consume, (void * )ethel);
+
+    printf("EXECUTE AFTER THREAD BEFORE EXIT CALL\n");
+    //MAYBE
+    //PTHREAD_EXIT(NULL)
     pthread_join(main_thread[0], NULL);
-    printf("EXECUTE AFTER THREAD");
+    pthread_join(main_thread[1], NULL);
+    pthread_join(main_thread[2], NULL);
+    pthread_join(main_thread[3], NULL);
+
 return 0;
 }

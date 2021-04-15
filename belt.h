@@ -14,6 +14,8 @@ class Belt {
     int snails;
     int max;
 
+    sem_t mutex, empty, full, cfb_limit;
+    
     Belt(int limit);
     int pop();
     bool push(int time);

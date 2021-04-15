@@ -13,4 +13,4 @@ class Consumer {
 
 };
 
-void consume();
+void *consume(void *consumer);

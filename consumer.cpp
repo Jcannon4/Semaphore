@@ -8,6 +8,6 @@ Consumer::Consumer(Belt *belt, int pace, string name) {
     Consumer::conveyor = belt;
 }
 
-void consume (){
+void *consume(void *consumer){
     printf("CONSUME BEING CALLED\n");
 }

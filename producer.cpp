@@ -1,6 +1,7 @@
 
 #include "io.h"
 #include "producer.h"
+#include <semaphore.h>
 //Semaphore logic being called by pthreads
 
 Producer::Producer(Belt *belt, int rate, string candy) {
@@ -14,5 +15,10 @@ void *produce (void *args){
     Producer *produce = (Producer*) args;
     int rate = produce -> rate;
     printf("VALUE : %d\n", rate);
+    while (true){
+        sem_wait(&produce->conveyor->empty);
+        sem_wait(&produce->conveyor->mutex);
+    }
+    
     return NULL;
 }
