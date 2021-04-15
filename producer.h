@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <stdio.h>
 #include "belt.h"
 
@@ -8,8 +7,8 @@ class Producer {
     public :
     int rate;
     Belt *conveyor;
-    string candy;
-    Producer(Belt *belt, int rate, string candy);
+    int candy;
+    Producer(Belt *belt, int rate, int candy);
 
 };
 

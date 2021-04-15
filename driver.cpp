@@ -45,8 +45,8 @@ int main(int argc, char **argv) {
       }
 
   }
-  Producer *frog_producer = new Producer(conveyor, cfb_rate, "frog");
-  Producer *snail_producer = new Producer(conveyor, esc_rate, "snail");
+  Producer *frog_producer = new Producer(conveyor, cfb_rate, 0);
+  Producer *snail_producer = new Producer(conveyor, esc_rate, 1);
   Consumer *lucy = new Consumer(conveyor, lucy_pace, "Lucy");
   Consumer *ethel = new Consumer(conveyor, ethel_pace, "Ethel");
     

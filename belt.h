@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include <queue>
 #include <semaphore.h>
 
 
@@ -13,13 +14,15 @@ class Belt {
     int ribbits;
     int snails;
     int max;
-
-    sem_t mutex, empty, full, cfb_limit;
+    std::queue<int> *belt;
+    sem_t mutex , unconsumed, cfb_limit, available_slots;
     
     Belt(int limit);
     int pop();
-    bool push(int time);
+    bool push(int candy);
+    
 };
+
 
 
 
