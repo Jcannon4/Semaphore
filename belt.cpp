@@ -8,7 +8,7 @@ Belt::Belt(int limit) {
     Belt::snails = 0;
     Belt::total = 0;
     Belt::max = limit;
-    
+    Belt::last = 0;
     Belt::ethel_snail,ethel_frog,lucy_frog,lucy_snail = 0;
 
     Belt::belt = new std::queue<int>();

@@ -1,9 +1,12 @@
 
 #include "io.h"
 #include "producer.h"
+#include "production.h"
 #include <semaphore.h>
 #include <unistd.h>
 //Semaphore logic being called by pthreads
+
+ProductType assembly_line;
 
 Producer::Producer(Belt *belt, int rate, int candy) {
     Producer::candy = candy;
