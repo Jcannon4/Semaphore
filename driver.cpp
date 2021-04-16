@@ -18,7 +18,9 @@ int main(int argc, char **argv) {
    
     int option;
     int ethel_pace, lucy_pace, cfb_rate, esc_rate = 0;
+
     Belt *conveyor = new Belt(100);
+
     pthread_t main_thread[4];
   
   while ((option = getopt(argc, argv, "E:L:f:e:")) != -1){
@@ -50,10 +52,6 @@ int main(int argc, char **argv) {
   Consumer *lucy = new Consumer(conveyor, lucy_pace, "Lucy");
   Consumer *ethel = new Consumer(conveyor, ethel_pace, "Ethel");
     
-    //Thread CFB
-    //then ESC
-    //CREATE LUCY 
-    //THEN ETHEL
     pthread_create(&main_thread[0], NULL, produce, (void * )snail_producer);
     pthread_create(&main_thread[1], NULL, produce, (void * )frog_producer);
     pthread_create(&main_thread[2], NULL, consume, (void * )lucy);

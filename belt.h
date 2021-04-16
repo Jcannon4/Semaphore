@@ -13,11 +13,13 @@ class Belt {
     public : 
     int ribbits;
     int snails;
+    int total;
     int max;
     std::queue<int> *belt;
     sem_t mutex , unconsumed, cfb_limit, available_slots;
     
     Belt(int limit);
+
     int pop();
     bool push(int candy);
     

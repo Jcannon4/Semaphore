@@ -20,6 +20,7 @@ void *produce (void *args){
         sem_wait(&produce->conveyor->available_slots);
         //buffer access
         sem_wait(&produce->conveyor->mutex);
+        
         produce->conveyor->push(produce->candy);
         sleep(2);
         sem_post(&produce->conveyor->mutex);
