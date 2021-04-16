@@ -46,6 +46,6 @@ void *consume(void *consumer){
             sem_post(&consume->conveyor->cfb_limit);
         }
         printf("----TOTAL-----\n\t%d\n", consume->conveyor->total);
-        sleep(2);
+        usleep(100);
     }
 }

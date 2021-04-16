@@ -14,18 +14,35 @@ Producer::Producer(Belt *belt, int rate, int candy) {
 void *produce (void *args){
     printf("PRODUCE BEING CALLED\n");
     Producer *produce = (Producer*) args;
-    int rate = produce -> rate;
-    printf("VALUE : %d\n", rate);
+    //0 = FROG
+    //1 = ESCARGOT
     while (true){
+        if(produce->candy == 0)
+        {
+            sem_wait(&produce->conveyor->cfb_limit);
+        }
+
         sem_wait(&produce->conveyor->available_slots);
-        //buffer access
         sem_wait(&produce->conveyor->mutex);
+
+        if(produce->conveyor->total >= produce->conveyor->max)
+        {
+            sem_post(&produce->conveyor->mutex);
+            sem_post(&produce->conveyor->unconsumed);
+            return nullptr;
+        }
         
-        produce->conveyor->push(produce->candy);
-        sleep(2);
+        bool isPlaced = produce->conveyor->push(produce->candy);
+
+        if(produce->candy == 0){
+            produce->conveyor->ribbits++;
+        } else {
+            produce->conveyor->snails++;
+        }
+        printf("Production current count, frogs: %d\tsnails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
         sem_post(&produce->conveyor->mutex);
         sem_post(&produce->conveyor->unconsumed);
-        
+        usleep(100);
     }
     
     return NULL;

@@ -17,21 +17,30 @@ Belt::Belt(int limit) {
     sem_init(&(Belt::unconsumed), 0, 0);
 }
 
+void Belt::killSem(){
+    sem_destroy(&(Belt::available_slots));
+    sem_destroy(&(Belt::cfb_limit));
+    sem_destroy(&(Belt::unconsumed));
+    sem_destroy(&(Belt::mutex));
+}
+
 bool Belt::push(int candy){
-    if((Belt::belt->size()) > 10) {
-        return false;
-    }
+    printf("conveyor belt size: %lu\n", Belt::belt->size());
+    if((Belt::belt->size()) < 10) {
+        Belt::belt->push(candy);
+        return true;
     //0 = Frog
     //1 = Escargot
-    printf("PUSHER MAN\n");
-    Belt::belt->push(candy);
-    if(candy == 0){
-        Belt::ribbits++;
-        printf("Total Frog count is %d\n", Belt::ribbits);
-    } else {
-        Belt::snails++;
-        printf("Total snail count is %d\n", Belt::snails);
-    }
+    }else {return false;}
+   
+    // if(candy == 0){
+    //     Belt::ribbits++;
+    //     printf("Total Frog count is %d\n", Belt::ribbits);
+    // } else {
+    //     Belt::snails++;
+    //     printf("Total snail count is %d\n", Belt::snails);
+    // }
+   
 }
 
 int Belt::pop() {

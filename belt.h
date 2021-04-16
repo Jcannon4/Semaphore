@@ -19,7 +19,7 @@ class Belt {
     sem_t mutex , unconsumed, cfb_limit, available_slots;
     
     Belt(int limit);
-
+    void killSem();
     int pop();
     bool push(int candy);
     

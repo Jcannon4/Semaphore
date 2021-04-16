@@ -65,5 +65,8 @@ int main(int argc, char **argv) {
     pthread_join(main_thread[2], NULL);
     pthread_join(main_thread[3], NULL);
 
+    conveyor->killSem();
+
+
 return 0;
 }
