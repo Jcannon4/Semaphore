@@ -8,8 +8,8 @@ class Consumer {
     public :
     int pace;
     Belt *conveyor;
-    string name;
-    Consumer(Belt *belt, int pace, string name);
+    int name;
+    Consumer(Belt *belt, int pace, int name);
 
 };
 

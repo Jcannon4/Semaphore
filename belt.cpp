@@ -9,6 +9,8 @@ Belt::Belt(int limit) {
     Belt::total = 0;
     Belt::max = limit;
     
+    Belt::ethel_snail,ethel_frog,lucy_frog,lucy_snail = 0;
+
     Belt::belt = new std::queue<int>();
 
     sem_init(&(Belt::mutex), 0 , 1);
@@ -25,7 +27,7 @@ void Belt::killSem(){
 }
 
 bool Belt::push(int candy){
-    printf("conveyor belt size: %lu\n", Belt::belt->size());
+    //printf("conveyor belt size: %lu\n", Belt::belt->size());
     if((Belt::belt->size()) < 10) {
         Belt::belt->push(candy);
         return true;
@@ -33,29 +35,15 @@ bool Belt::push(int candy){
     //1 = Escargot
     }else {return false;}
    
-    // if(candy == 0){
-    //     Belt::ribbits++;
-    //     printf("Total Frog count is %d\n", Belt::ribbits);
-    // } else {
-    //     Belt::snails++;
-    //     printf("Total snail count is %d\n", Belt::snails);
-    // }
-   
 }
 
 int Belt::pop() {
     int desired;
     if(!belt->empty()){
-        printf("POPPING OFF!\n");
+       // printf("POPPING OFF!\n");
         desired = belt->front();
         belt->pop();
     }   
     return desired;
-    // if(desired == 0 ){
-    //     Belt::ribbits--;
-    //     printf("Frog consumed : %d\n", Belt::ribbits);
-    // } else {
-    //     Belt::snails--;
-    //     printf("Escargot Consumed: %d\n", Belt::snails);
-    // }
+   
 }

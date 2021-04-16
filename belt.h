@@ -15,6 +15,10 @@ class Belt {
     int snails;
     int total;
     int max;
+    int ethel_snail;
+    int ethel_frog;
+    int lucy_frog;
+    int lucy_snail;
     std::queue<int> *belt;
     sem_t mutex , unconsumed, cfb_limit, available_slots;
     

@@ -3,16 +3,16 @@
 #include <unistd.h>
 //Semaphore logic being called by pthreads
 
-Consumer::Consumer(Belt *belt, int pace, string name) {
+Consumer::Consumer(Belt *belt, int pace, int name) {
     Consumer::name = name;
     Consumer::pace = pace;
     Consumer::conveyor = belt;
 }
 
 void *consume(void *consumer){
-    printf("CONSUME BEING CALLED\n");
+    
     Consumer *consume = (Consumer *) consumer;
-    printf("SPEED: %d\n", consume->pace);
+   
     while(true){
         
         sem_wait(&consume->conveyor->unconsumed);
@@ -31,11 +31,32 @@ void *consume(void *consumer){
         int curCandy = consume->conveyor->pop();
         if (curCandy){
             consume->conveyor->snails--;
-            printf("SNAIL CONSUMEED:\t%d\n", consume->conveyor->snails);
         } else {
             consume->conveyor->ribbits--;
-            printf("FROG CONSUMED\t%d\n", consume->conveyor->ribbits);
         }
+        //Snail
+        if(curCandy){
+            //Ethel Snail
+            if(consume->name){
+                consume->conveyor->ethel_snail++;
+            }
+            //Lucy Snail
+            else if (consume->name == 0){
+                consume->conveyor->lucy_snail++;
+            }
+        }
+        //Frog
+        else if(curCandy == 0){
+            //Ethel Frod
+            if(consume->name){
+                consume->conveyor->ethel_frog++;
+            }
+            //Lucy frog
+            else if (consume->name == 0){
+                consume->conveyor->lucy_frog++;
+            }
+        }
+        
 
         consume->conveyor->total++;
         
@@ -45,7 +66,9 @@ void *consume(void *consumer){
         if(curCandy == 0){
             sem_post(&consume->conveyor->cfb_limit);
         }
-        printf("----TOTAL-----\n\t%d\n", consume->conveyor->total);
-        usleep(100);
+        //printf("Total: %d\nEthel Frog: %d\tLucy Frog: %d\n EthelSnail: %d\t LucySnail: %d\n", consume->conveyor->total, consume->conveyor->ethel_frog, consume->conveyor->lucy_frog, consume->conveyor->ethel_snail, consume->conveyor->lucy_snail);
+        int grandTotal = consume->conveyor->ethel_frog + consume->conveyor->lucy_frog + consume->conveyor->ethel_snail + consume->conveyor->lucy_snail;
+        //printf("GRANDTOTAL : %d\n", grandTotal);
+        usleep(consume->pace);
     }
 }

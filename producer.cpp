@@ -36,13 +36,16 @@ void *produce (void *args){
 
         if(produce->candy == 0){
             produce->conveyor->ribbits++;
+            //printf("Just added frog\n");
         } else {
             produce->conveyor->snails++;
+            //printf("Just added snail\n");
         }
-        printf("Production current count, frogs: %d\tsnails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
+        //printf("Belt contains \nfrogs: %d\t snails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
+        
         sem_post(&produce->conveyor->mutex);
         sem_post(&produce->conveyor->unconsumed);
-        usleep(100);
+        usleep(produce->rate);
     }
     
     return NULL;

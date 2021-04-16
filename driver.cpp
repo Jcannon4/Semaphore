@@ -47,10 +47,12 @@ int main(int argc, char **argv) {
       }
 
   }
+  //FROG = 0
+  //LUCY = 0
   Producer *frog_producer = new Producer(conveyor, cfb_rate, 0);
   Producer *snail_producer = new Producer(conveyor, esc_rate, 1);
-  Consumer *lucy = new Consumer(conveyor, lucy_pace, "Lucy");
-  Consumer *ethel = new Consumer(conveyor, ethel_pace, "Ethel");
+  Consumer *lucy = new Consumer(conveyor, lucy_pace, 0);
+  Consumer *ethel = new Consumer(conveyor, ethel_pace, 1);
     
     pthread_create(&main_thread[0], NULL, produce, (void * )snail_producer);
     pthread_create(&main_thread[1], NULL, produce, (void * )frog_producer);
