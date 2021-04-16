@@ -30,18 +30,20 @@ void *consume(void *consumer){
             sem_post(&consume->conveyor->available_slots);
             return nullptr;
         }
-        
         int curCandy = consume->conveyor->pop();
+
         if (curCandy){
             consume->conveyor->snails--;
-        } else {
+        } else if (curCandy == 0) {
             consume->conveyor->ribbits--;
         }
+
         //Snail
         if(curCandy){
             //Ethel Snail
             if(consume->name){
                 consume->conveyor->ethel_snail++;
+                //consume->conveyor->produced[0] = consume->conveyor->ethel_snail;
             }
             //Lucy Snail
             else if (consume->name == 0){
@@ -69,9 +71,10 @@ void *consume(void *consumer){
         if(curCandy == 0){
             sem_post(&consume->conveyor->cfb_limit);
         }
-        printf("Total: %d\nEthel Frog: %d\tLucy Frog: %d\n EthelSnail: %d\t LucySnail: %d\n", consume->conveyor->total, consume->conveyor->ethel_frog, consume->conveyor->lucy_frog, consume->conveyor->ethel_snail, consume->conveyor->lucy_snail);
+       printf("Total: %d\nEthel Frog: %d\tLucy Frog: %d\n EthelSnail: %d\t LucySnail: %d\n", consume->conveyor->total, consume->conveyor->ethel_frog, consume->conveyor->lucy_frog, consume->conveyor->ethel_snail, consume->conveyor->lucy_snail);
         int grandTotal = consume->conveyor->ethel_frog + consume->conveyor->lucy_frog + consume->conveyor->ethel_snail + consume->conveyor->lucy_snail;
-        printf("GRANDTOTAL : %d\n", grandTotal);
+       printf("GRANDTOTAL : %d\n", grandTotal);
+        
         usleep(consume->pace);
     }
 }

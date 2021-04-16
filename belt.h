@@ -21,6 +21,13 @@ class Belt {
     int lucy_snail;
     int last =0;
     std::queue<int> *belt;
+
+    int onBelt[2] = {0,0};
+    
+    int produced[2];
+
+    int consumed[2][2];
+
     sem_t mutex , unconsumed, cfb_limit, available_slots;
     
     Belt(int limit);

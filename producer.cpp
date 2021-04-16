@@ -15,7 +15,7 @@ Producer::Producer(Belt *belt, int rate, int candy) {
 }
 
 void *produce (void *args){
-    printf("PRODUCE BEING CALLED\n");
+    //printf("PRODUCE BEING CALLED\n");
     Producer *produce = (Producer*) args;
     //0 = FROG
     //1 = ESCARGOT
@@ -36,19 +36,29 @@ void *produce (void *args){
         }
         
         bool isPlaced = produce->conveyor->push(produce->candy);
-
         if(produce->candy == 0){
             produce->conveyor->ribbits++;
+            // produce->conveyor->produced[0] = produce->conveyor->ribbits;
+            // produce->conveyor->onBelt[0]++;
+            printf("RUNNING FROG: %d", produce->conveyor->ribbits);
             //printf("Just added frog\n");
         } else {
             produce->conveyor->snails++;
+            // produce->conveyor->produced[1] = produce->conveyor->snails;
+            // produce->conveyor->onBelt[1]++;
+            printf("RUNNING SNAIL: %d", produce->conveyor->snails);
             //printf("Just added snail\n");
         }
-        //printf("Belt contains \nfrogs: %d\t snails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
+        // int onBelt[] = {produce->conveyor->ribbits, produce->conveyor->snails};
+        // int produced[] = {produce->conveyor->ethel_frog + produce->conveyor->lucy_frog , produce->conveyor->ethel_snail + produce->conveyor->lucy_snail};
+        // io_add_type(assembly_line, onBelt, produced);
+
         
+        //printf("Belt contains \nfrogs: %d\t snails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
+        printf("FROG %d : SNAIL : %d", produce->conveyor->ribbits, produce->conveyor->snails);
         sem_post(&produce->conveyor->mutex);
         sem_post(&produce->conveyor->unconsumed);
-        usleep(produce->rate);
+        usleep(produce->rate );
     }
     
     return NULL;

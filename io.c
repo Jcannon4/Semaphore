@@ -94,7 +94,6 @@ void io_add_type(ProductType producer, int OnBelt[], int Produced[]) {
     total += OnBelt[idx];
   }
   printf(" = %d. ", total);
-
   printf("Added %s.", ProducerNames[producer]);
 
   /* Show what has been produced */

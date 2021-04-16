@@ -13,6 +13,8 @@ Belt::Belt(int limit) {
 
     Belt::belt = new std::queue<int>();
 
+    
+
     sem_init(&(Belt::mutex), 0 , 1);
     sem_init(&(Belt::available_slots), 0, 10);
     sem_init(&(Belt::cfb_limit), 0, 3);
@@ -30,6 +32,7 @@ bool Belt::push(int candy){
     //printf("conveyor belt size: %lu\n", Belt::belt->size());
     if((Belt::belt->size()) < 10) {
         Belt::belt->push(candy);
+        
         return true;
     //0 = Frog
     //1 = Escargot
@@ -42,6 +45,7 @@ int Belt::pop() {
     if(!belt->empty()){
        // printf("POPPING OFF!\n");
         desired = belt->front();
+        
         belt->pop();
     }   
     return desired;

@@ -2,7 +2,7 @@ CC = g++ -std=c++11
 STRUCTS = io.o production.o belt.o producer.o consumer.o 
 
 mizzo: driver.cpp ${STRUCTS} 
-	${CC} -g -o mizzo driver.cpp io.o production.o belt.o producer.o consumer.o -lpthread 
+	${CC} -g -o mizzo driver.cpp io.o production.o belt.o producer.o consumer.o -lpthread
 	rm io.o production.o belt.o producer.o consumer.o
 io.o: io.c io.h
 	${CC} -w -o io.o -c io.c
