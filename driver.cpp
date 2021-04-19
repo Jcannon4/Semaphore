@@ -16,8 +16,6 @@ int main(int argc, char **argv) {
    
     int option;
     int  cfb_rate, esc_rate, ethel_pace, lucy_pace;
-
-    
     cfb_rate = esc_rate = ethel_pace = lucy_pace = option = 0;
     
     Belt *conveyor = new Belt(100);
