@@ -9,6 +9,7 @@ class Producer {
     Belt *conveyor;
     int candy;
     Producer(Belt *belt, int rate, int candy);
+   
 
 };
 

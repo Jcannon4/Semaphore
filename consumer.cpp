@@ -1,5 +1,6 @@
 #include "io.h"
 #include "consumer.h"
+#include "production.h"
 #include <unistd.h>
 //Semaphore logic being called by pthreads
 
@@ -12,69 +13,88 @@ Consumer::Consumer(Belt *belt, int pace, int name) {
 void *consume(void *consumer){
     
     Consumer *consume = (Consumer *) consumer;
-   
+    
     while(true){
         
+        usleep(consume->pace * 1000);
         sem_wait(&consume->conveyor->unconsumed);
         sem_wait(&consume->conveyor->mutex);
-        if(consume->conveyor->total >= consume->conveyor->max ){
-            printf("we have reach our consumption limit\n");
-            if(consume->conveyor->last){
-                
-                //TODO io.c functions
 
-            }
-            //Change boolean value
-            consume->conveyor->last++;
+        if(consume->conveyor->consumption_counter >= consume->conveyor->max ){
             sem_post(&consume->conveyor->mutex);
             sem_post(&consume->conveyor->available_slots);
             return nullptr;
         }
+
         int curCandy = consume->conveyor->pop();
+        //Check that candy has been consumed
+        if(curCandy >= 0){
+            //Increase total consumpiton counter
+            consume->conveyor->consumption_counter++;
+            //check for frogbite
+            if (consume->name == Lucy){
+                
+                //Track Lucy's frogs
+                if(curCandy == FrogBite){
+                    consume->conveyor->ribbits--; 
+                    consume->conveyor->onBelt[FrogBite]--;
+                    consume->conveyor->report[Lucy][FrogBite]++;
+                    int l_consume[2] = {consume->conveyor->report[Lucy][FrogBite], consume->conveyor->report[Lucy][Escargot]};
+                    io_remove_type(Lucy, FrogBite, consume->conveyor->onBelt, l_consume);
+                    
+                } //Lucy has consumed a frog
+                else{
+                    consume->conveyor->snails--;
+                    consume->conveyor->onBelt[Escargot]--;
+                    consume->conveyor->report[Lucy][Escargot]++;
+                    int l_consume[2] = {consume->conveyor->report[Lucy][FrogBite], consume->conveyor->report[Lucy][Escargot]};
+                    io_remove_type(Lucy, Escargot, consume->conveyor->onBelt, l_consume);
+                }
+                
+            } //Check that the this is Ethel
+            else if (consume->name == Ethel){
+               //decrement snail count
+                
+                //Ethel has consumed a frogbite
+                if(curCandy == FrogBite){
+                   consume->conveyor->ribbits--; 
+                    consume->conveyor->onBelt[FrogBite]--;
+                    
+                    consume->conveyor->report[Ethel][FrogBite]++;
+                    int e_consume[2] = {consume->conveyor->report[Ethel][FrogBite], consume->conveyor->report[Ethel][Escargot]};
+                    io_remove_type(Ethel, FrogBite, consume->conveyor->onBelt, e_consume);
 
-        if (curCandy){
-            consume->conveyor->snails--;
-        } else if (curCandy == 0) {
-            consume->conveyor->ribbits--;
-        }
-
-        //Snail
-        if(curCandy){
-            //Ethel Snail
-            if(consume->name){
-                consume->conveyor->ethel_snail++;
-                //consume->conveyor->produced[0] = consume->conveyor->ethel_snail;
+                }//Ethel has consumed a snail
+                else {
+                    consume->conveyor->snails--;
+                    //Remove snail from belt
+                    consume->conveyor->onBelt[Escargot]--;
+                   
+                    consume->conveyor->report[Ethel][Escargot]++;
+                    int e_consume[2] = {consume->conveyor->report[Ethel][FrogBite], consume->conveyor->report[Ethel][Escargot]};
+                    io_remove_type(Ethel, Escargot, consume->conveyor->onBelt, e_consume);
+                    
+                }
+                
             }
-            //Lucy Snail
-            else if (consume->name == 0){
-                consume->conveyor->lucy_snail++;
-            }
-        }
-        //Frog
-        else if(curCandy == 0){
-            //Ethel Frod
-            if(consume->name){
-                consume->conveyor->ethel_frog++;
-            }
-            //Lucy frog
-            else if (consume->name == 0){
-                consume->conveyor->lucy_frog++;
-            }
+            
         }
         
-
-        consume->conveyor->total++;
-        
-        
+        if(consume->conveyor->consumption_counter == consume->conveyor->max){
+            sem_post(&consume->conveyor->mutex);
+            sem_post(&consume->conveyor->available_slots);
+            sem_post(&consume->conveyor->barrier);
+            return nullptr;
+        } 
+            
         sem_post(&consume->conveyor->mutex);
         sem_post(&consume->conveyor->available_slots);
-        if(curCandy == 0){
-            sem_post(&consume->conveyor->cfb_limit);
-        }
-       printf("Total: %d\nEthel Frog: %d\tLucy Frog: %d\n EthelSnail: %d\t LucySnail: %d\n", consume->conveyor->total, consume->conveyor->ethel_frog, consume->conveyor->lucy_frog, consume->conveyor->ethel_snail, consume->conveyor->lucy_snail);
-        int grandTotal = consume->conveyor->ethel_frog + consume->conveyor->lucy_frog + consume->conveyor->ethel_snail + consume->conveyor->lucy_snail;
-       printf("GRANDTOTAL : %d\n", grandTotal);
         
-        usleep(consume->pace);
+        
+       if(curCandy == FrogBite){
+           sem_post(&consume->conveyor->cfb_limit);
+       }
+        
     }
+    
 }

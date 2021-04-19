@@ -15,51 +15,92 @@ Producer::Producer(Belt *belt, int rate, int candy) {
 }
 
 void *produce (void *args){
-    //printf("PRODUCE BEING CALLED\n");
+    
     Producer *produce = (Producer*) args;
     //0 = FROG
     //1 = ESCARGOT
     while (true){
-        if(produce->candy == 0)
-        {
+        
+    
+        // }
+        //Semaphore is 3
+        // if(produce->candy == Escargot && produce->rate > 10000){
+        //     produce->rate = 0;
+        // } 
+
+        usleep(produce->rate *1000);
+        
+        if(produce->candy == FrogBite){
+            
             sem_wait(&produce->conveyor->cfb_limit);
         }
-
+        
         sem_wait(&produce->conveyor->available_slots);
         sem_wait(&produce->conveyor->mutex);
-
+        
         if(produce->conveyor->total >= produce->conveyor->max)
         {
             sem_post(&produce->conveyor->mutex);
             sem_post(&produce->conveyor->unconsumed);
+            
             return nullptr;
         }
+        //Pushing candy id number onto our belt
+        bool isPlaced  = produce->conveyor->push(produce->candy);
         
-        bool isPlaced = produce->conveyor->push(produce->candy);
-        if(produce->candy == 0){
-            produce->conveyor->ribbits++;
-            // produce->conveyor->produced[0] = produce->conveyor->ribbits;
-            // produce->conveyor->onBelt[0]++;
-            printf("RUNNING FROG: %d", produce->conveyor->ribbits);
-            //printf("Just added frog\n");
-        } else {
-            produce->conveyor->snails++;
-            // produce->conveyor->produced[1] = produce->conveyor->snails;
-            // produce->conveyor->onBelt[1]++;
-            printf("RUNNING SNAIL: %d", produce->conveyor->snails);
-            //printf("Just added snail\n");
-        }
-        // int onBelt[] = {produce->conveyor->ribbits, produce->conveyor->snails};
-        // int produced[] = {produce->conveyor->ethel_frog + produce->conveyor->lucy_frog , produce->conveyor->ethel_snail + produce->conveyor->lucy_snail};
-        // io_add_type(assembly_line, onBelt, produced);
+        //Check if the candy was succesfully placed
+        if(isPlaced){
 
-        
-        //printf("Belt contains \nfrogs: %d\t snails: %d\n", produce->conveyor->ribbits, produce->conveyor->snails);
-        printf("FROG %d : SNAIL : %d", produce->conveyor->ribbits, produce->conveyor->snails);
-        sem_post(&produce->conveyor->mutex);
-        sem_post(&produce->conveyor->unconsumed);
-        usleep(produce->rate );
+            produce->conveyor->total++;
+            
+            
+            //check if frogs
+            if(produce->candy == FrogBite){
+                //increment total # of frogs made
+                produce->conveyor->ribbits++;
+                produce->conveyor->onBelt[FrogBite]++;
+                produce->conveyor->produced[FrogBite]++;
+               
+                
+                io_add_type(FrogBite, produce->conveyor->onBelt, produce->conveyor->produced);
+                //printf("Produced size : %d\n", produce->conveyor->produced[0] + produce->conveyor->produced[1]);
+                
+                //Check if current total is the max
+                //check if current amount of frogs == 3
+                if(produce->conveyor->total >= produce->conveyor->max){
+                    
+                    sem_post(&produce->conveyor->mutex);
+                    sem_post(&produce->conveyor->unconsumed);
+                    
+                    return nullptr;
+                } 
+
+            } //Candy is a snail
+            else {
+                //Increase snail counter
+                produce->conveyor->snails++;
+                produce->conveyor->onBelt[Escargot]++;
+                produce->conveyor->produced[Escargot]++;
+
+                //printf("Produced size : %d\n", produce->conveyor->produced[0] + produce->conveyor->produced[1]);
+                
+                io_add_type(Escargot, produce->conveyor->onBelt, produce->conveyor->produced);
+                //Double check we arent at the max
+                if(produce->conveyor->total >= produce->conveyor->max){
+                    
+                    sem_post(&produce->conveyor->mutex);
+                    sem_post(&produce->conveyor->unconsumed);
+                    //printf("EXITINg at bottom producer\n");
+                    return nullptr;
+                }
+            }
+            //Unblock threads upon completion
+            sem_post(&produce->conveyor->mutex);
+            sem_post(&produce->conveyor->unconsumed);
+            
+        }
+       
     }
     
-    return NULL;
+    //return NULL;
 }
